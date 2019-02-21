@@ -28,7 +28,7 @@ RGB图片就是有三通道，RGBA类图片就是有四通道
 2、将图像中每个8*8的block进行DCT变换     
 
 图像的采样和量化   
-*数字图像的质量在很大程度上取决于取样和量化中所用的样本数和灰度级*   
+数字图像的质量在很大程度上取决于取样和量化中所用的样本数和灰度级   
 
  一般来说，采样间隔越大，所得图像像素数越少，空间分辨率低，质量差，严重时出现马赛克效应；采样间隔越小，所得图像像素数越多，空间分辨率高，图像质量好，但数据量大。    
    ![图像采样](https://images2015.cnblogs.com/blog/1150128/201704/1150128-20170423180408804-1321761433.png)
@@ -51,7 +51,7 @@ RGB图片就是有三通道，RGBA类图片就是有四通道
 
 ## 简单深入    
 ### 卷积的认识   
-卷积相当于
+卷积是一种积分运算，用来求两个曲线重叠区域面积。可以看作加权求和，可以用来消除噪声、特征增强。 把一个点的像素值用它周围的点的像素值的加权平均代替。   
 卷积在图像中的应用  
 1. 用来消除噪声 
 2. 特征增强  
@@ -59,7 +59,7 @@ RGB图片就是有三通道，RGBA类图片就是有四通道
 在网上找的一个很形象的例子：  
 *比如说你的老板命令你干活，你却到楼下打台球去了，后来被老板发现，他非常气愤，扇了你一巴掌（注意，这就是输入信号，脉冲），于是你的脸上会渐渐地（贱贱地）鼓起来一个包，你的脸就是一个系统，而鼓起来的包就是你的脸对巴掌的响应，好，这样就和信号系统建立起来意义对应的联系。*
 
-*下面还需要一些假设来保证论证的严谨：假定你的脸是线性时不变系统，也就是说，无论什么时候老板打你一巴掌，打在你脸的同一位置（这似乎要求你的脸足够光滑，如果你说你长了很多青春痘，甚至整个脸皮处处连续处处不可导，那难度太大了，我就无话可说了哈哈），你的脸上总是会在相同的时间间隔内鼓起来一个相同高度的包来，并且假定以鼓起来的包的大小作为系统输出。好了，那么，下面可以进入核心内容——卷积了！ *
+*下面还需要一些假设来保证论证的严谨：假定你的脸是线性时不变系统，也就是说，无论什么时候老板打你一巴掌，打在你脸的同一位置（这似乎要求你的脸足够光滑，如果你说你长了很多青春痘，甚至整个脸皮处处连续处处不可导，那难度太大了，我就无话可说了哈哈），你的脸上总是会在相同的时间间隔内鼓起来一个相同高度的包来，并且假定以鼓起来的包的大小作为系统输出。好了，那么，下面可以进入核心内容——卷积了！*
 
 *如果你每天都到地下去打台球，那么老板每天都要扇你一巴掌，不过当老板打你一巴掌后，你5分钟就消肿了，所以时间长了，你甚至就适应这种生活了……如果有一天，老板忍无可忍，以0.5秒的间隔开始不间断的扇你的过程，这样问题就来了，第一次扇你鼓起来的包还没消肿，第二个巴掌就来了，你脸上的包就可能鼓起来两倍高，老板不断扇你，脉冲不断作用在你脸上，效果不断叠加了，这样这些效果就可以求和了，结果就是你脸上的包的高度随时间变化的一个函数了（注意理解）；*
 
@@ -69,6 +69,11 @@ RGB图片就是有三通道，RGBA类图片就是有四通道
 
 作者：刺客五六柒 
 原文：https://blog.csdn.net/qq_39521554/article/details/79083864 
+
+直接上图吧！！  
+![原图]{https://img-blog.csdn.net/20171205213200395?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYml0Y2FybWFubGVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast}    
+平滑后：    
+![利用卷积平滑后](https://img-blog.csdn.net/20171205213308721?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYml0Y2FybWFubGVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)   
 
 ## 初学Opencv   
 一、调用摄像头  
@@ -80,19 +85,89 @@ using namespace std;
  
  
 void main(){
-Mat Frame;//创建一个Mat 对象，是一个矩阵。
-VideoCapture cap(0);//读摄像头文件，0代表电脑摄像头
+Mat Frame;			//创建一个Mat 对象，是一个矩阵。
+VideoCapture cap(0);		//读摄像头文件，0代表电脑摄像头
  
 while(true)
 {
-	cap>>Frame;//cap读取一帧图像保存在frame中，后一个参数为0表示可以调节窗口大小。若为1表示不可以。
-        imshow("frame",Frame);//把Frame矩阵中的内容显示出来。第一个参数表示窗口名称
-        waitKey(10);//等待10毫秒，为0表示无限延迟。
+	cap>>Frame;             //cap读取一帧图像保存在frame中，后一个参数为0表示可以调节窗口大小。若为1表示不可以。
+        imshow("frame",Frame);  //把Frame矩阵中的内容显示出来。第一个参数表示窗口名称
+        waitKey(10);            //等待10毫秒，为0表示无限延迟。
 }
 }
 ```
+二、高斯模糊
+#include<iostream>
+#include<opencv2/opencv.hpp>
 
+#define PI 3.1415926
 
+using namespace std;
+using namespace cv;
+
+int main(int argc, char ** argv)
+{
+	Mat src = imread("C:/Users/Lenovo/Pictures/Saved Pictures/lena.jpg", 1);
+	cvtColor(src, src, COLOR_BGR2GRAY);
+	namedWindow("src", WINDOW_AUTOSIZE);
+	imshow("src", src);
+
+	//5x5卷积模板
+	Mat model = Mat(5, 5, CV_64FC1);
+
+	double sigma = 80;
+	for (int i = -2; i <= 2; i++)
+	{
+		for (int j = -2; j <= 2; j++)
+		{
+			model.at<double>(i + 2, j + 2) =
+				exp(-(i * i + j * j) / (2 * sigma * sigma)) /
+				(2 * PI * sigma * sigma);
+		}
+	}
+
+	double gaussSum = 0;
+	gaussSum = sum(model).val[0];           //高斯模糊
+	for (int i = 0; i < model.rows; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			model.at<double>(i, j) = model.at<double>(i, j) /
+				gaussSum;
+		}
+	}
+
+	Mat dst = Mat(src.rows - 4, src.cols - 4, CV_8UC1);
+
+	for (int i = 2; i < src.rows - 2; i++)
+	{
+		for (int j = 2; j < src.cols - 2; j++)
+		{
+			double sum = 0;
+			for (int m = 0; m < model.rows; m++)
+			{
+				for (int n = 0; n < model.cols; n++)
+				{
+					sum += (double)src.at<uchar>(i + m - 2, j + n - 2) *
+						model.at<double>(m, n);
+				}
+			}
+
+			dst.at<uchar>(i - 2, j - 2) = (uchar)sum;
+
+		}
+	}
+
+	namedWindow("gaussBlur", WINDOW_AUTOSIZE);
+	imshow("gaussBlur", dst);
+
+	waitKey(0);
+}
+## 初学心得
+接触到Opencv的时候完完全全不知道有这么一个东西，更别提配置环境什么了，后来在计算机视觉培训上发现它的神奇之处----第一次通过代码调用摄像头
+将照片映在电脑屏幕、利用边缘检测将图片的轮廓显示出来……   
+现在对计算机视觉有了一个新的认识，也对它产生了兴趣，虽然现在依然没有很清楚的了解卷积、高斯模糊具体的概念，但在以后的学习中会有意识的去真正
+理解这些东西。
 
 
 
