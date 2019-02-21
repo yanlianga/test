@@ -71,7 +71,7 @@ RGB图片就是有三通道，RGBA类图片就是有四通道
 原文：https://blog.csdn.net/qq_39521554/article/details/79083864 
 
 直接上图吧！！  
-![原图]{https://img-blog.csdn.net/20171205213200395?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYml0Y2FybWFubGVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast}    
+![原图](https://img-blog.csdn.net/20171205213200395?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYml0Y2FybWFubGVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)    
 平滑后：    
 ![利用卷积平滑后](https://img-blog.csdn.net/20171205213308721?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYml0Y2FybWFubGVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)   
 
@@ -96,7 +96,8 @@ while(true)
 }
 }
 ```
-二、高斯模糊
+二、高斯模糊   
+```
 #include<iostream>
 #include<opencv2/opencv.hpp>
 
@@ -162,13 +163,14 @@ int main(int argc, char ** argv)
 	imshow("gaussBlur", dst);
 
 	waitKey(0);
-}
+} 
+```
 ## 初学心得
 接触到Opencv的时候完完全全不知道有这么一个东西，更别提配置环境什么了，后来在计算机视觉培训上发现它的神奇之处----第一次通过代码调用摄像头
 将照片映在电脑屏幕、利用边缘检测将图片的轮廓显示出来……   
 现在对计算机视觉有了一个新的认识，也对它产生了兴趣，虽然现在依然没有很清楚的了解卷积、高斯模糊具体的概念，但在以后的学习中会有意识的去真正
 理解这些东西。
-
+一个边缘检测很详细的示例：https://www.cnblogs.com/xiaojianliu/articles/9904141.html
 
 
 
