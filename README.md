@@ -75,6 +75,18 @@ RGB图片就是有三通道，RGBA类图片就是有四通道
 平滑后：    
 ![利用卷积平滑后](https://img-blog.csdn.net/20171205213308721?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYml0Y2FybWFubGVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)   
 
+## 高斯模糊  
+高斯模糊属于一种正态分布   
+     
+![](https://www.itcodemonkey.com/data/upload/portal/20180720/1532067912272098.png)     
+     
+而图像是有很多个像素点组成的，所以图像应该用的是二维正态分布，   
+    
+![](https://img-blog.csdn.net/20160429144548129)     
+     
+利用第二个公式可以计算一个权重矩阵，将各点的灰度值乘以权重值，相加即为中心点的权重值，将所有的点赋以同样的计算方式。
+
+   
 ## 初学Opencv   
 一、调用摄像头  
 ```
@@ -113,8 +125,7 @@ int main(int argc, char ** argv)
 	namedWindow("src", WINDOW_AUTOSIZE);
 	imshow("src", src);
 
-	//5x5卷积模板
-	Mat model = Mat(5, 5, CV_64FC1);
+	Mat model = Mat(5, 5, CV_64FC1);	//5x5权值数组
 
 	double sigma = 80;
 	for (int i = -2; i <= 2; i++)
@@ -165,6 +176,7 @@ int main(int argc, char ** argv)
 	waitKey(0);
 } 
 ```
+   
 ## 初学心得
 接触到Opencv的时候完完全全不知道有这么一个东西，更别提配置环境什么了，后来在计算机视觉培训上发现它的神奇之处----第一次通过代码调用摄像头
 将照片映在电脑屏幕、利用边缘检测将图片的轮廓显示出来……   
